@@ -1,0 +1,50 @@
+{
+    "site_name": "SMAF",
+    "site_title": "مرحبا بكم في شبكة SMAF",
+    "site_language": "ar",
+    "network_name": " ",
+    "network_password": "S1510M1607",
+    "network_security": "WPA/WPA2",
+    "network_hidden": false,
+    "theme": {
+        "primary_color": "#00ff88",
+        "secondary_color": "#ff3366",
+        "bg_color": "#0a0a0a",
+        "card_bg": "#1a1a1a",
+        "text_color": "#ffffff",
+        "accent_color": "#00ccff",
+        "font_family": "'Cairo', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
+        "border_radius": "12px",
+        "animation_speed": "0.3s",
+        "glow_effect": true,
+        "glass_morphism": true,
+        "cyberpunk_mode": true,
+        "particles_effect": true,
+        "font_size": "16px",
+        "card_opacity": "1",
+        "border_width": "2px",
+        "shadow_intensity": "20px"
+    },
+    "devices": [
+        {
+            "id": "WIFI",
+            "name": "Router",
+            "ip": "192.168.1.1",
+            "mac": "DC:15:93:AC:EA:E8",
+            "status": "active",
+            "first_seen": "0000-00-00 00:00:00",
+            "last_seen": "0000-00-00 00:00:00",
+            "visits": 0
+        },
+        {
+            "id": "ca44765a",
+            "name": "📱 جهاز أندرويد",
+            "ip": "192.168.1.6",
+            "mac": "F96E094ABCF0",
+            "status": "active",
+            "first_seen": "2026-03-15 22:23:15",
+            "last_seen": "2026-03-16 03:21:30",
+            "visits": 29
+        }
+    ]
+}
