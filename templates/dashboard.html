@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>⚡ لوحة التحكم - {{ config.site_name }}</title>
+    <style>
+        /* نفس متغيرات التصميم */
+        :root {
+            --primary: {{ config.theme.primary_color }};
+            --secondary: {{ config.theme.secondary_color }};
+            --bg: {{ config.theme.bg_color }};
+            --card-bg: {{ config.theme.card_bg }};
+            --text: {{ config.theme.text_color }};
+            --accent: {{ config.theme.accent_color }};
+            --radius: {{ config.theme.border_radius }};
+            --animation: {{ config.theme.animation_speed }};
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: {{ config.theme.font_family }};
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        /* خلفية متحركة */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 20% 50%, var(--primary) 0%, transparent 50%),
+                        radial-gradient(circle at 80% 80%, var(--secondary) 0%, transparent 50%);
+            opacity: 0.1;
+            pointer-events: none;
+            animation: pulse 10s ease infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.1; }
+            50% { opacity: 0.15; }
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Header */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            border: 1px solid var(--primary);
+            box-shadow: 0 0 20px var(--primary);
+        }
+
+        .header h1 {
+            font-size: 2rem;
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .header-stats {
+            display: flex;
+            gap: 20px;
+        }
+
+        .stat {
+            text-align: center;
+            padding: 10px 20px;
+            background: var(--bg);
+            border-radius: var(--radius);
+            border-left: 3px solid var(--primary);
+        }
+
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--primary);
+        }
+
+        /* الرسائل */
+        .alert {
+            padding: 15px 20px;
+            margin-bottom: 20px;
+            border-radius: var(--radius);
+            animation: slideIn var(--animation);
+        }
+
+        .alert-success {
+            background: {{ config.theme.primary_color }}20;
+            border: 1px solid var(--primary);
+            color: var(--primary);
+        }
+
+        .alert-error {
+            background: {{ config.theme.secondary_color }}20;
+            border: 1px solid var(--secondary);
+            color: var(--secondary);
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Grid */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        /* الكروت */
+        .card {
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            padding: 25px;
+            border: 1px solid var(--primary);
+            transition: all var(--animation);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 0 30px var(--primary);
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: conic-gradient(transparent, var(--primary), transparent 30%);
+            animation: rotate 4s linear infinite;
+            opacity: 0.1;
+        }
+
+        .card::after {
+            content: '';
+            position: absolute;
+            inset: 2px;
+            background: var(--card-bg);
+            border-radius: calc(var(--radius) - 2px);
+        }
+
+        .card-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .card-title {
+            font-size: 1.5rem;
+            color: var(--primary);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* النماذج */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--accent);
+            font-weight: bold;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 12px 15px;
+            background: var(--bg);
+            border: 1px solid {{ config.theme.primary_color }}40;
+            border-radius: var(--radius);
+            color: var(--text);
+            font-family: inherit;
+            transition: all var(--animation);
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 15px var(--primary);
+        }
+
+        input[type="color"] {
+            height: 50px;
+            padding: 5px;
+        }
+
+        input[type="checkbox"] {
+            width: auto;
+            margin-left: 10px;
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* الأزرار */
+        .btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: var(--radius);
+            font-weight: bold;
+            cursor: pointer;
+            transition: all var(--animation);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-primary {
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
+            color: var(--bg);
+        }
+
+        .btn-primary:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 20px var(--primary);
+        }
+
+        .btn-danger {
+            background: var(--secondary);
+            color: var(--bg);
+        }
+
+        .btn-small {
+            padding: 5px 10px;
+            font-size: 0.85rem;
+        }
+
+        /* جدول الأجهزة */
+        .devices-table {
+            overflow-x: auto;
+            margin-top: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            background: var(--primary);
+            color: var(--bg);
+            padding: 12px;
+            font-weight: bold;
+        }
+
+        td {
+            padding: 10px;
+            border-bottom: 1px solid {{ config.theme.primary_color }}20;
+        }
+
+        tr:hover {
+            background: {{ config.theme.primary_color }}10;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .header {
+                flex-direction: column;
+                gap: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>⚡ لوحة التحكم المتطورة</h1>
+            <div class="header-stats">
+                <div class="stat">
+                    <div class="stat-value">{{ config.devices|length }}</div>
+                    <div>جهاز</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value">{{ config.devices|selectattr('status', 'equalto', 'active')|list|length }}</div>
+                    <div>نشط</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- الرسائل -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <!-- Grid -->
+        <div class="dashboard-grid">
+            <!-- كارت الإعدادات الأساسية -->
+            <div class="card">
+                <div class="card-content">
+                    <h2 class="card-title">🔧 الإعدادات الأساسية</h2>
+                    <form action="{{ url_for('update_settings') }}" method="post">
+                        <div class="form-group">
+                            <label>اسم الموقع</label>
+                            <input type="text" name="site_name" value="{{ config.site_name }}" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>العنوان الرئيسي</label>
+                            <input type="text" name="site_title" value="{{ config.site_title }}" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>لغة الموقع</label>
+                            <select name="site_language">
+                                <option value="ar" {% if config.site_language == 'ar' %}selected{% endif %}>العربية</option>
+                                <option value="en" {% if config.site_language == 'en' %}selected{% endif %}>English</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>اسم الشبكة (SSID)</label>
+                            <input type="text" name="network_name" value="{{ config.network_name }}" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>كلمة المرور</label>
+                            <input type="text" name="network_password" value="{{ config.network_password }}" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>نوع الحماية</label>
+                            <select name="network_security">
+                                <option value="WPA2-PSK" {% if config.network_security == 'WPA2-PSK' %}selected{% endif %}>WPA2-PSK</option>
+                                <option value="WPA3" {% if config.network_security == 'WPA3' %}selected{% endif %}>WPA3</option>
+                                <option value="WPA/WPA2" {% if config.network_security == 'WPA/WPA2' %}selected{% endif %}>WPA/WPA2</option>
+                                <option value="مفتوحة" {% if config.network_security == 'مفتوحة' %}selected{% endif %}>مفتوحة</option>
+                            </select>
+                        </div>
+                        
+                        <div class="checkbox-group">
+                            <input type="checkbox" name="network_hidden" id="hidden" {% if config.network_hidden %}checked{% endif %}>
+                            <label for="hidden">شبكة مخفية</label>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary">💾 حفظ الإعدادات</button>
+                    </form>
+                </div>
+            </div>
+<!-- كارت التحكم في التصميم -->
+<div class="card">
+    <div class="card-content">
+        <h2 class="card-title">🎨 التحكم في التصميم</h2>
+        <form action="{{ url_for('update_settings') }}" method="post">
+            <!-- ✅ الحقول المطلوبة (hidden) -->
+            <input type="hidden" name="site_name" value="{{ config.site_name }}">
+            <input type="hidden" name="site_title" value="{{ config.site_title }}">
+            <input type="hidden" name="site_language" value="{{ config.site_language }}">
+            <input type="hidden" name="network_name" value="{{ config.network_name }}">
+            <input type="hidden" name="network_password" value="{{ config.network_password }}">
+            <input type="hidden" name="network_security" value="{{ config.network_security }}">
+            
+            <!-- ✅ إعدادات التصميم -->
+            <div class="form-group">
+                <label>اللون الأساسي</label>
+                <input type="color" name="primary_color" value="{{ config.theme.primary_color }}" required>
+            </div>
+            
+            <div class="form-group">
+                <label>اللون الثانوي</label>
+                <input type="color" name="secondary_color" value="{{ config.theme.secondary_color }}" required>
+            </div>
+            
+            <div class="form-group">
+                <label>لون الخلفية</label>
+                <input type="color" name="bg_color" value="{{ config.theme.bg_color }}" required>
+            </div>
+            
+            <div class="form-group">
+                <label>لون البطاقات</label>
+                <input type="color" name="card_bg" value="{{ config.theme.card_bg }}" required>
+            </div>
+            
+            <div class="form-group">
+                <label>لون النص</label>
+                <input type="color" name="text_color" value="{{ config.theme.text_color }}" required>
+            </div>
+            
+            <div class="form-group">
+                <label>لون التمييز</label>
+                <input type="color" name="accent_color" value="{{ config.theme.accent_color }}" required>
+            </div>
+            
+            <div class="form-group">
+                <label>نوع الخط</label>
+                <select name="font_family" required>
+                    <option value="'Cairo', 'Segoe UI', sans-serif" {% if config.theme.font_family == "'Cairo', 'Segoe UI', sans-serif" %}selected{% endif %}>Cairo (عربي)</option>
+                    <option value="'Poppins', 'Segoe UI', sans-serif" {% if config.theme.font_family == "'Poppins', 'Segoe UI', sans-serif" %}selected{% endif %}>Poppins (إنجليزي)</option>
+                    <option value="'Roboto', 'Segoe UI', sans-serif" {% if config.theme.font_family == "'Roboto', 'Segoe UI', sans-serif" %}selected{% endif %}>Roboto</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label>تدوير الزوايا</label>
+                <select name="border_radius" required>
+                    <option value="4px" {% if config.theme.border_radius == '4px' %}selected{% endif %}>صغير (4px)</option>
+                    <option value="8px" {% if config.theme.border_radius == '8px' %}selected{% endif %}>متوسط (8px)</option>
+                    <option value="12px" {% if config.theme.border_radius == '12px' %}selected{% endif %}>كبير (12px)</option>
+                    <option value="16px" {% if config.theme.border_radius == '16px' %}selected{% endif %}>كبير جداً (16px)</option>
+                    <option value="20px" {% if config.theme.border_radius == '20px' %}selected{% endif %}>دائري (20px)</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label>سرعة الحركة</label>
+                <select name="animation_speed" required>
+                    <option value="0.2s" {% if config.theme.animation_speed == '0.2s' %}selected{% endif %}>سريع (0.2s)</option>
+                    <option value="0.3s" {% if config.theme.animation_speed == '0.3s' %}selected{% endif %}>متوسط (0.3s)</option>
+                    <option value="0.5s" {% if config.theme.animation_speed == '0.5s' %}selected{% endif %}>بطيء (0.5s)</option>
+                    <option value="0.8s" {% if config.theme.animation_speed == '0.8s' %}selected{% endif %}>بطيء جداً (0.8s)</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label>حجم الخط</label>
+                <select name="font_size" required>
+                    <option value="14px" {% if config.theme.font_size == '14px' %}selected{% endif %}>صغير (14px)</option>
+                    <option value="16px" {% if config.theme.font_size == '16px' %}selected{% endif %}>عادي (16px)</option>
+                    <option value="18px" {% if config.theme.font_size == '18px' %}selected{% endif %}>كبير (18px)</option>
+                    <option value="20px" {% if config.theme.font_size == '20px' %}selected{% endif %}>كبير جداً (20px)</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label>سمك الحدود</label>
+                <select name="border_width" required>
+                    <option value="1px" {% if config.theme.border_width == '1px' %}selected{% endif %}>رفيع (1px)</option>
+                    <option value="2px" {% if config.theme.border_width == '2px' %}selected{% endif %}>عادي (2px)</option>
+                    <option value="3px" {% if config.theme.border_width == '3px' %}selected{% endif %}>سميك (3px)</option>
+                    <option value="4px" {% if config.theme.border_width == '4px' %}selected{% endif %}>سميك جداً (4px)</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label>قوة التوهج</label>
+                <select name="shadow_intensity" required>
+                    <option value="10px" {% if config.theme.shadow_intensity == '10px' %}selected{% endif %}>خفيف (10px)</option>
+                    <option value="20px" {% if config.theme.shadow_intensity == '20px' %}selected{% endif %}>عادي (20px)</option>
+                    <option value="30px" {% if config.theme.shadow_intensity == '30px' %}selected{% endif %}>قوي (30px)</option>
+                    <option value="40px" {% if config.theme.shadow_intensity == '40px' %}selected{% endif %}>قوي جداً (40px)</option>
+                </select>
+            </div>
+            
+            <!-- ✅ Checkboxes -->
+            <div class="checkbox-group">
+                <input type="checkbox" name="glow_effect" id="glow" {% if config.theme.glow_effect %}checked{% endif %}>
+                <label for="glow">✨ تأثير التوهج</label>
+            </div>
+            
+            <div class="checkbox-group">
+                <input type="checkbox" name="glass_morphism" id="glass" {% if config.theme.glass_morphism %}checked{% endif %}>
+                <label for="glass">🥃 تأثير الزجاج</label>
+            </div>
+            
+            <div class="checkbox-group">
+                <input type="checkbox" name="cyberpunk_mode" id="cyberpunk" {% if config.theme.cyberpunk_mode %}checked{% endif %}>
+                <label for="cyberpunk">⚡ وضع السايبربانك</label>
+            </div>
+            
+            <div class="checkbox-group">
+                <input type="checkbox" name="particles_effect" id="particles" {% if config.theme.particles_effect %}checked{% endif %}>
+                <label for="particles">🌌 جسيمات متحركة</label>
+            </div>
+            
+            <button type="submit" class="btn btn-primary">🎯 تحديث التصميم</button>
+        </form>
+    </div>
+</div>
+        </div>
+
+        <!-- كارت إضافة جهاز -->
+        <div class="card" style="margin-bottom: 30px;">
+            <div class="card-content">
+                <h2 class="card-title">➕ إضافة جهاز يدوياً</h2>
+                <form action="{{ url_for('add_device') }}" method="post" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
+                    <div class="form-group">
+                        <label>اسم الجهاز</label>
+                        <input type="text" name="device_name" required placeholder="مثال: لاب توب مصطفى">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>عنوان IP</label>
+                        <input type="text" name="device_ip" required placeholder="192.168.1.1">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>عنوان MAC</label>
+                        <input type="text" name="device_mac" required placeholder="AA:BB:CC:DD:EE:FF">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>الحالة</label>
+                        <select name="device_status">
+                            <option value="active">نشط</option>
+                            <option value="inactive">غير نشط</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group" style="display: flex; align-items: flex-end;">
+                        <button type="submit" class="btn btn-primary">➕ إضافة</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- جدول الأجهزة -->
+        <div class="card">
+            <div class="card-content">
+                <h2 class="card-title">📱 الأجهزة المسجلة ({{ config.devices|length }})</h2>
+                {% if config.devices %}
+                <div class="devices-table">
+                    <table>
+                        <thead>
+                            <tr>
+                              <th>
+                                ID الجهاز
+                              </th>
+                                <th>الجهاز</th>
+                                <th>IP</th>
+                                <th>MAC</th>
+                                <th>الحالة</th>
+                                <th>أول ظهور</th>
+                                <th>آخر ظهور</th>
+                                <th>تحكم</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for device in config.devices %}
+                            <tr>
+                              <td>
+                                <span>{{  device.id  }}</span>
+                              </td>
+                                <td>
+                                    <span>{{ device.name }}</span>
+                                    {% if device.added_manually %}
+                                    <span style="color: var(--accent); font-size: 0.8rem;">(يدوي)</span>
+                                    {% endif %}
+                                </td>
+                                <td>{{ device.ip }}</td>
+                                <td style="font-family: monospace;">{{ device.mac }}</td>
+                                <td>
+                                    <span class="status-badge status-{{ device.status }}">
+                                        {{ 'نشط' if device.status == 'active' else 'غير نشط' }}
+                                    </span>
+                                </td>
+                                <td>{{ device.first_seen or '-' }}</td>
+                                <td>{{ device.last_seen or '-' }}</td><td>
+    <a href="{{ url_for('delete_device', device_id=device.id) }}" 
+       class="btn btn-danger btn-small"
+       onclick="return confirm('⚠️ تأكيد حذف {{ device.name }}؟')">
+        🗑️ حذف
+    </a>
+</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <div style="text-align: center; padding: 50px; color: #666;">
+                    <div style="font-size: 4rem; margin-bottom: 20px;">📡</div>
+                    <div>لا توجد أجهزة مسجلة بعد</div>
+                    <div style="font-size: 0.9rem; margin-top: 10px;">انتظر الزوار أو أضف أجهزة يدوياً</div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // معاينة حية للتغييرات
+        document.querySelectorAll('input[type="color"], select').forEach(input => {
+            input.addEventListener('change', function() {
+                // ممكن نضيف معاينة حية هنا
+            });
+        });
+    </script>
+</body>
+</html>
